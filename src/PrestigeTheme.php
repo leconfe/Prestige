@@ -4,6 +4,7 @@ namespace Prestige;
 
 use App\Classes\Theme;
 use App\Facades\Hook;
+use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Forms\Components\TinyEditor;
 use Carbon\Carbon;
 use Filament\Forms\Components\Builder;
@@ -14,7 +15,6 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
