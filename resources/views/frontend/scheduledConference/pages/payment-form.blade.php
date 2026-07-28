@@ -10,7 +10,7 @@
                     Payment Form
                 </div>
 
-                <x-filament-panels::form
+                <form
                     id="form" 
                     wire:submit="submit"
                     class="space-y-2"
@@ -20,7 +20,7 @@
                     <div class="flex">
                         {{ $this->submitAction }}
                     </div>
-                </x-filament-panels::form>
+                </form>
             </div>
         </main>
     </div>
