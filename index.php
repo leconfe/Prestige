@@ -2,6 +2,6 @@
 
 use Prestige\PrestigeTheme;
 
-require __DIR__.'/vendor/autoload.php';
+require 'vendor/autoload.php';
 
 return new PrestigeTheme;

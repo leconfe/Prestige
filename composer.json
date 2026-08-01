@@ -1,7 +1,5 @@
 {
     "name": "leconfe/prestige",
-    "description": "Prestige Theme",
-    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Prestige\\": "src/"
