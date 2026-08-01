@@ -11,14 +11,17 @@ use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Str;
 use luizbills\CSS_Generator\Generator as CSSGenerator;
 use matthieumastadenis\couleur\ColorFactory;
 use matthieumastadenis\couleur\ColorSpace;
@@ -35,15 +38,11 @@ class PrestigeTheme extends Theme
 
     public function getFormSchema(): array
     {
-        $grid = FilamentCompatibility::grid();
-        $tab = FilamentCompatibility::tab();
-        $tabs = FilamentCompatibility::tabs();
-
         return [
-            $tabs::make('Tabs')
+            Tabs::make('Tabs')
                 ->contained(false)
                 ->tabs([
-                    $tab::make('General')
+                    Tabs\Tab::make('General')
                         ->schema([
                             SpatieMediaLibraryFileUpload::make('banner_bg')
                                 ->collection('prestige_banner_bg')
@@ -54,7 +53,7 @@ class PrestigeTheme extends Theme
                             ColorPicker::make('banner_text_color')
                                 ->regex('/^#?(([a-f0-9]{3}){1,2})$/i')
                                 ->label('Banner Text Color'),
-                            $grid::make()
+                            Grid::make()
                                 ->schema([
                                     ColorPicker::make('base_color')
                                         ->regex('/^#?(([a-f0-9]{3}){1,2})$/i')
@@ -63,7 +62,7 @@ class PrestigeTheme extends Theme
                                         ->regex('/^#?(([a-f0-9]{3}){1,2})$/i')
                                         ->label('Base Color Content'),
                                 ]),
-                            $grid::make()
+                            Grid::make()
                                 ->schema([
                                     ColorPicker::make('primary_color')
                                         ->regex('/^#?(([a-f0-9]{3}){1,2})$/i')
@@ -86,7 +85,7 @@ class PrestigeTheme extends Theme
                                 ])
                                 ->columns(2),
                         ]),
-                    $tab::make('Layouts')
+                    Tabs\Tab::make('Layouts')
                         ->schema([
                             Builder::make('layouts')
                                 ->collapsible()
@@ -185,7 +184,7 @@ class PrestigeTheme extends Theme
                                                 ->label('Title')
                                                 ->required(),
                                             SpatieMediaLibraryFileUpload::make('galleries')
-                                                ->collection(function (FileUpload $component, $get) {
+                                                ->collection(function (FileUpload $component, Get $get) {
                                                     return $get('image_collection_id') ?? $component->getContainer()->getStatePath() . '.' . $component->getStatePath(false);
                                                 })
                                                 ->afterStateHydrated(null)
@@ -194,7 +193,7 @@ class PrestigeTheme extends Theme
                                                 ->multiple()
                                                 ->conversion('thumb-xl')
                                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                                ->afterStateUpdated(function (FileUpload $component, $set) {
+                                                ->afterStateUpdated(function (FileUpload $component, Set $set) {
                                                     $set('image_collection_id', $component->getContainer()->getStatePath() . '.' . $component->getStatePath(false));
                                                 })
                                                 ->reorderable()
@@ -255,7 +254,7 @@ class PrestigeTheme extends Theme
     {
         Hook::add('Frontend::Views::Head', function ($hookName, &$output) {
             $output .= (new Vite())->useHotFile(base_path('plugins') . DIRECTORY_SEPARATOR . $this->getInfo('folder') . DIRECTORY_SEPARATOR . 'vite.hot')
-                ->useBuildDirectory('plugin' . DIRECTORY_SEPARATOR . Str::lower($this->getInfo('folder')) . DIRECTORY_SEPARATOR . 'build')
+                ->useBuildDirectory($this->getAssetsPath('build'))
                 ->withEntryPoints(['resources/css/app.css', 'resources/js/app.js'])
                 ->toHtml();
 
