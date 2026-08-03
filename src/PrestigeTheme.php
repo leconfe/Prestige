@@ -11,18 +11,17 @@ use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
+use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Tabs;
+use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Str;
 use luizbills\CSS_Generator\Generator as CSSGenerator;
 use matthieumastadenis\couleur\ColorFactory;
 use matthieumastadenis\couleur\ColorSpace;
@@ -255,7 +254,7 @@ class PrestigeTheme extends Theme
     {
         Hook::add('Frontend::Views::Head', function ($hookName, &$output) {
             $output .= (new Vite())->useHotFile(base_path('plugins') . DIRECTORY_SEPARATOR . $this->getInfo('folder') . DIRECTORY_SEPARATOR . 'vite.hot')
-                ->useBuildDirectory('plugin' . DIRECTORY_SEPARATOR . Str::lower($this->getInfo('folder')) . DIRECTORY_SEPARATOR . 'build')
+                ->useBuildDirectory($this->getAssetsPath('build'))
                 ->withEntryPoints(['resources/css/app.css', 'resources/js/app.js'])
                 ->toHtml();
 

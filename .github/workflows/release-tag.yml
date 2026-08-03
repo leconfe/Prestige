@@ -8,27 +8,38 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write
+
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@v4
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: '8.3'
         extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, iconv, json, mbstring, pdo
-    
+
+    - name: Validate Composer
+      run: composer validate --no-check-publish
+
     - name: Install PHP dependencies
       run: composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --optimize-autoloader
-    
+
+    - name: Audit PHP dependencies
+      run: composer audit
+
     - name: Setup Bun
       uses: oven-sh/setup-bun@v1
       with:
         bun-version: latest
-    
+
     - name: Install JS dependencies
-      run: bun install
-    
+      run: bun install --frozen-lockfile
+
+    - name: Audit JS dependencies
+      run: bun audit || true
+
     - name: Build JS assets
       run: bun run build
 
@@ -36,7 +47,7 @@ jobs:
       run: |
         mkdir -p ./release/${{ github.event.repository.name }}
         rsync -av --progress ./ ./release/${{ github.event.repository.name }} --exclude release --exclude .git --exclude node_modules --exclude tests --exclude .github
-    
+
     - name: Create zip archive
       run: |
         cd release
@@ -46,7 +57,7 @@ jobs:
           echo "Error: plugin.zip was not created"
           exit 1
         fi
-    
+
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v2
@@ -60,7 +71,7 @@ jobs:
         prerelease: false
         generate_release_notes: true
 
-    
+
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
